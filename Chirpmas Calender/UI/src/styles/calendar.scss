@@ -1,0 +1,584 @@
+// Global (non-module) stylesheet. Every class is prefixed "cc-" to avoid clashes with the game and other mods,
+// and selectors stay single-class because Gameface does not enable CSS combinators by default.
+// 1rem = 1px at 1080p.
+
+@use "sass:math";
+
+$cc-red: #d0605a;
+$cc-cream: #f6d7b0;
+$cc-night: #3a3a5c;
+$cc-gold: #ffd76a;
+
+$cc-stage-width: 1152rem;
+$cc-stage-height: 648rem;
+
+// Gameface ignores var() in shorthand properties (border-radius, border-color, ...), so these expand to longhands.
+@mixin cc-radius($value) {
+    border-top-left-radius: $value;
+    border-top-right-radius: $value;
+    border-bottom-right-radius: $value;
+    border-bottom-left-radius: $value;
+}
+
+@mixin cc-border-width($value) {
+    border-top-width: $value;
+    border-right-width: $value;
+    border-bottom-width: $value;
+    border-left-width: $value;
+}
+
+@mixin cc-border-color($value) {
+    border-top-color: $value;
+    border-right-color: $value;
+    border-bottom-color: $value;
+    border-left-color: $value;
+}
+
+.cc-button-wrapper {
+    position: relative;
+}
+
+.cc-badge {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    background-color: $cc-red;
+    border: 2rem solid #ffffff;
+    pointer-events: none;
+}
+
+.cc-root {
+    position: absolute;
+    top: 72rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cc-panel {
+    width: $cc-stage-width + 32rem;
+}
+
+.cc-panel-content {
+    padding: 16rem;
+}
+
+.cc-header-title {
+    color: $cc-cream;
+    font-size: var(--fontSizeL);
+    font-weight: bold;
+}
+
+.cc-stage {
+    position: relative;
+    width: $cc-stage-width;
+    height: $cc-stage-height;
+    border-radius: 8rem;
+    overflow: hidden;
+    background-color: $cc-night;
+}
+
+.cc-stage-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+// Doors: each one covers exactly the inside of a painted window (see doorLayout.ts), so the hand-drawn frame stays visible
+// around it. border-box keeps the state border inside that area.
+
+.cc-door {
+    position: absolute;
+    box-sizing: border-box;
+    border-radius: 3rem;
+    border-width: 2rem;
+    border-style: solid;
+    border-color: transparent;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.cc-door-round {
+    border-radius: 50%;
+}
+
+// Percentages (like the round door) instead of rem: a rem radius that rounds to just over half the width makes the corner
+// arcs overlap, which Gameface draws as a dark cross.
+.cc-door-arch {
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+}
+
+.cc-door-locked {
+    background-color: rgba(26, 28, 62, 0.5);
+}
+
+.cc-door-locked:hover {
+    background-color: rgba(26, 28, 62, 0.3);
+    border-color: rgba(255, 255, 255, 0.55);
+}
+
+// Gameface doesn't support border-style: dashed; pending doors stand out by their gold fill instead.
+.cc-door-pending {
+    background-color: rgba(255, 215, 106, 0.18);
+    border-color: rgba(255, 215, 106, 0.85);
+}
+
+.cc-door-pending:hover {
+    background-color: rgba(255, 215, 106, 0.32);
+}
+
+.cc-door-open {
+    border-color: rgba(255, 236, 170, 0.85);
+}
+
+.cc-door-open:hover {
+    background-color: rgba(255, 240, 200, 0.25);
+    border-color: #ffffff;
+}
+
+// Gamepad/keyboard focus (the door is a cs2/ui Button).
+.cc-door.focused {
+    border-color: #ffffff;
+}
+
+.cc-door-today {
+    animation: cc-glow 1.4s ease-in-out infinite alternate;
+}
+
+// Every length needs a unit here: Gameface rejects animated box-shadows that mix a unitless 0 with rem values.
+@keyframes cc-glow {
+    from {
+        box-shadow: 0rem 0rem 4rem 0rem rgba(255, 215, 106, 0.5);
+    }
+    to {
+        box-shadow: 0rem 0rem 16rem 4rem rgba(255, 215, 106, 1);
+    }
+}
+
+// Loading / error overlay
+
+.cc-status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(20, 22, 45, 0.7);
+}
+
+.cc-status-text {
+    color: #ffffff;
+    font-size: var(--fontSizeL);
+}
+
+.cc-status-error {
+    margin-top: 8rem;
+    color: $cc-cream;
+    font-size: var(--fontSizeS);
+}
+
+// Day detail
+
+.cc-detail-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(20, 22, 45, 0.6);
+}
+
+// The detail view is a real game Panel; these classes only size it and lay out its content,
+// using the game's own theme variables so it matches the vanilla info panels.
+
+.cc-detail-panel {
+    width: 820rem;
+}
+
+.cc-detail-panel-locked {
+    width: 480rem;
+}
+
+.cc-detail-content {
+    display: flex;
+    flex-direction: column;
+    padding: 16rem;
+}
+
+.cc-detail-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.cc-detail-media {
+    position: relative;
+    width: 280rem;
+    height: 280rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include cc-radius(var(--panelRadius));
+    background-color: var(--sectionBackgroundColor);
+    overflow: hidden;
+}
+
+// Paradox Mods covers are square; background-size: cover also crops non-square images instead of stretching them.
+.cc-detail-cover {
+    width: 280rem;
+    height: 280rem;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.cc-detail-probe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cc-detail-chirpy {
+    width: 200rem;
+    height: 200rem;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.cc-detail-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 16rem;
+}
+
+.cc-detail-title {
+    margin-bottom: 10rem;
+    color: var(--normalTextColor);
+    font-size: var(--fontSizeXL);
+    font-weight: bold;
+}
+
+.cc-info-section {
+    margin-bottom: 10rem;
+    padding: 4rem 12rem;
+    @include cc-radius(var(--panelRadius));
+    background-color: var(--sectionBackgroundColor);
+}
+
+.cc-info-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6rem 0;
+    border-bottom-width: 1rem;
+    border-bottom-style: solid;
+    border-bottom-color: var(--dividerColor);
+}
+
+.cc-info-row-last {
+    border-bottom-width: 0;
+}
+
+.cc-info-label {
+    flex: 1;
+    color: var(--menuText2Normal);
+    font-size: var(--fontSizeS);
+    text-transform: uppercase;
+}
+
+.cc-info-value {
+    color: var(--normalTextColor);
+    font-size: var(--fontSizeM);
+    text-transform: uppercase;
+}
+
+.cc-detail-text {
+    color: var(--menuText1Normal);
+    font-size: var(--fontSizeM);
+    line-height: 1.4;
+}
+
+.cc-detail-description {
+    padding: 10rem 12rem;
+    @include cc-radius(var(--panelRadius));
+    background-color: var(--sectionBackgroundColor);
+}
+
+.cc-detail-pending {
+    padding: 10rem 12rem;
+    @include cc-radius(var(--panelRadius));
+    border-left-width: 4rem;
+    border-left-style: solid;
+    border-left-color: var(--warningColor);
+    background-color: var(--sectionBackgroundColor);
+}
+
+.cc-detail-pending-title {
+    margin-bottom: 4rem;
+    color: var(--warningColor);
+    font-size: var(--fontSizeM);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+// Locked door
+
+.cc-locked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12rem 8rem 4rem 8rem;
+}
+
+.cc-locked-badge {
+    width: 96rem;
+    height: 96rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 3rem solid rgba(255, 255, 255, 0.15);
+    background-color: var(--sectionBackgroundColor);
+}
+
+.cc-locked-icon {
+    width: 48rem;
+    height: 48rem;
+    --iconColor: var(--menuText1Normal);
+}
+
+.cc-locked-title {
+    margin-top: 14rem;
+    color: var(--normalTextColor);
+    font-size: var(--fontSizeL);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.cc-locked-text {
+    margin-top: 6rem;
+    color: var(--menuText1Normal);
+    font-size: var(--fontSizeM);
+    text-align: center;
+}
+
+// Buttons copied from the game's confirmation dialogs (green "yes" / red "no"), built from the game's :root variables.
+
+.cc-detail-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 16rem;
+}
+
+.cc-cs2-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10rem;
+    padding: 10rem 18rem;
+    border-style: solid;
+    @include cc-border-width(var(--stroke2));
+    border-radius: 5rem;
+    color: #ffffff;
+    font-size: var(--fontSizeM);
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.cc-cs2-button-positive {
+    @include cc-border-color(var(--buttonStrokeGreen));
+    background-image: linear-gradient(90deg, var(--gradientGreenEdge), var(--gradientGreenMiddle), var(--gradientGreenMiddle), var(--gradientGreenEdge));
+}
+
+.cc-cs2-button-positive:hover,
+.cc-cs2-button-positive.focused,
+.cc-cs2-button-positive:active {
+    @include cc-border-color(var(--buttonStrokeLightGreen));
+    background-image: linear-gradient(90deg, var(--gradientLightGreenEdge), var(--gradientLightGreenMiddle), var(--gradientLightGreenMiddle), var(--gradientLightGreenEdge));
+    box-shadow: 0rem 0rem 20rem rgba(0, 0, 0, 0.5);
+}
+
+.cc-cs2-button-negative {
+    @include cc-border-color(var(--buttonStrokeRed));
+    background-image: linear-gradient(90deg, var(--gradientRedEdge), var(--gradientRedMiddle), var(--gradientRedMiddle), var(--gradientRedEdge));
+}
+
+.cc-cs2-button-negative:hover,
+.cc-cs2-button-negative.focused,
+.cc-cs2-button-negative:active {
+    @include cc-border-color(var(--buttonStrokeLightRed));
+    background-image: linear-gradient(90deg, var(--gradientLightRedEdge), var(--gradientLightRedMiddle), var(--gradientLightRedMiddle), var(--gradientLightRedEdge));
+    box-shadow: 0rem 0rem 20rem rgba(0, 0, 0, 0.5);
+}
+
+.cc-cs2-button-icon {
+    width: 20rem;
+    height: 20rem;
+    margin-right: 8rem;
+    --iconColor: #ffffff;
+}
+
+.cc-cs2-button-label {
+    color: #ffffff;
+}
+
+.cc-action-button {
+    margin-left: 10rem;
+    padding: 6rem 16rem;
+}
+
+.cc-detail-hint {
+    margin-top: 10rem;
+    color: var(--menuText2Normal);
+    font-size: var(--fontSizeXS);
+    text-align: right;
+}
+
+// Footer
+
+.cc-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 12rem;
+}
+
+.cc-footer-text {
+    flex: 1;
+    color: $cc-cream;
+    font-size: var(--fontSizeS);
+}
+
+// Welcome pop-up (first click on the Chirpmas button, or "About Chirpmas")
+
+$cc-welcome-width: 960rem;
+
+.cc-welcome-panel {
+    width: $cc-welcome-width;
+}
+
+.cc-welcome-content {
+    display: flex;
+    flex-direction: column;
+    padding: 16rem;
+}
+
+// Banner artwork is 1200x481.
+.cc-welcome-banner {
+    width: $cc-welcome-width - 32rem;
+    height: math.div(($cc-welcome-width - 32rem) * 481, 1200);
+    @include cc-radius(8rem);
+}
+
+.cc-welcome-intro {
+    margin-top: 14rem;
+    color: var(--normalTextColor);
+    font-size: var(--fontSizeM);
+    line-height: 1.4;
+}
+
+.cc-welcome-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 14rem;
+}
+
+.cc-welcome-section {
+    padding: 10rem 14rem;
+    @include cc-radius(var(--panelRadius));
+    background-color: var(--sectionBackgroundColor);
+}
+
+.cc-welcome-how {
+    flex: 1;
+    margin-right: 12rem;
+}
+
+.cc-welcome-creators {
+    width: 340rem;
+    flex-shrink: 0;
+}
+
+.cc-welcome-section-title {
+    margin-bottom: 8rem;
+    color: $cc-cream;
+    font-size: var(--fontSizeM);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.cc-welcome-step {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 8rem;
+}
+
+.cc-welcome-step-number {
+    width: 24rem;
+    height: 24rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10rem;
+    border-radius: 50%;
+    background-color: $cc-red;
+    color: #ffffff;
+    font-size: var(--fontSizeS);
+    font-weight: bold;
+}
+
+.cc-welcome-step-text {
+    flex: 1;
+    color: var(--menuText1Normal);
+    font-size: var(--fontSizeS);
+    line-height: 1.4;
+}
+
+.cc-welcome-creator-columns {
+    display: flex;
+    flex-direction: row;
+}
+
+.cc-welcome-creator-column {
+    flex: 1;
+}
+
+.cc-welcome-creator {
+    padding: 3rem 0;
+    color: var(--normalTextColor);
+    font-size: var(--fontSizeS);
+}
+
+.cc-welcome-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 14rem;
+}
+
+.cc-welcome-disclaimer {
+    flex: 1;
+    margin-right: 12rem;
+    color: var(--menuText2Normal);
+    font-size: var(--fontSizeXS);
+}
