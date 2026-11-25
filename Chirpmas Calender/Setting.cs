@@ -17,7 +17,7 @@ namespace ChirpmasCalendar
     {
         // Master switch for the testing/debug options (simulated day, chirp reset, profiler, calendar source overrides).
         // false = they are hidden in the Options UI and their saved values are ignored, so the calendar strictly follows the real
-        // Pacific date (see CalendarSchedule) and the official server. Tied to the build configuration so a Release build can
+        // Central European date (see CalendarSchedule) and the official server. Tied to the build configuration so a Release build can
         // never ship with them enabled.
 #if DEBUG
         public const bool EnableDebugSettings = true;

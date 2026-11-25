@@ -72,7 +72,7 @@ namespace ChirpmasCalendar.Systems
                 if (view.DataVersion != m_View.DataVersion || view.StateKey != m_View.StateKey)
                 {
                     if (!view.Simulated && !m_View.Simulated && view.DataVersion == m_View.DataVersion && view.Today > m_View.Today)
-                        Mod.Log.Info($"Door {view.Today} unlocked ({CalendarSchedule.UtcToPacific(service.Clock.UtcNow):yyyy-MM-dd HH:mm:ss} {CalendarSchedule.kTimeZoneId})");
+                        Mod.Log.Info($"Door {view.Today} unlocked ({CalendarSchedule.UtcToEventTime(service.Clock.UtcNow):yyyy-MM-dd HH:mm:ss} {CalendarSchedule.kTimeZoneId})");
 
                     m_View = view;
                     m_NewestDoorKey = view.Today > 0 && view.Today <= view.Days.Count ? view.Days[view.Today - 1].AnnounceKey : null;

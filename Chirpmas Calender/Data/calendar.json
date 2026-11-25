@@ -1,7 +1,7 @@
 {
     "schemaVersion": 2,
     "eventActive": true,
-    "timezone": "America/Los_Angeles",
+    "timezone": "Europe/Berlin",
     "eventStart": "2026-12-01T00:00:00+01:00",
     "packModId": null,
     "announcement": "Welcome to the Countdown to Chirpmas! A new festive asset every day until Christmas Eve.",

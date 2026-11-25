@@ -52,7 +52,7 @@ namespace ChirpmasCalendar
             Calendar.Reload();
 
             if (CalendarSchedule.UsesFallbackOffset)
-                Log.Warn($"Time zone '{CalendarSchedule.kTimeZoneId}' is not available on this system; using a fixed UTC-8 offset (no daylight saving time).");
+                Log.Warn($"Time zone '{CalendarSchedule.kTimeZoneId}' is not available on this system; using a fixed UTC+1 offset (no daylight saving time).");
             if (Setting.DebugSettingsEnabled)
                 Log.Warn("Debug settings are enabled (Setting.EnableDebugSettings). Do not publish this build.");
 

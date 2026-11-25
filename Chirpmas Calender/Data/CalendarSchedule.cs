@@ -4,32 +4,32 @@ using System.Globalization;
 namespace ChirpmasCalendar.Data
 {
     /// <summary>
-    /// When the doors open. All calendar dates run on Pacific time (America/Los_Angeles, UTC-8 in December),
+    /// When the doors open. All calendar dates run on Central European time (Europe/Berlin, CET = UTC+1 in December),
     /// no matter which time zone the player's PC uses: door N opens on the Nth event date at <see cref="kUnlockTimeOfDay"/>.
     /// The first event date is the date of "eventStart" in calendar.json (server); <see cref="kEventStart"/> is only the fallback.
     /// </summary>
     public static class CalendarSchedule
     {
-        // Fallback when calendar.json has no valid "eventStart". Door 1 opens at this wall-clock time in America/Los_Angeles.
+        // Fallback when calendar.json has no valid "eventStart". Door 1 opens at this wall-clock time in Europe/Berlin (CET).
         public static readonly DateTime kEventStart = new DateTime(2026, 12, 1, 0, 0, 5, DateTimeKind.Unspecified);
 
-        // Every door opens at this time of day (Pacific time).
+        // Every door opens at this time of day (Central European time).
         public static readonly TimeSpan kUnlockTimeOfDay = new TimeSpan(0, 0, 0, 5);
 
-        public const string kTimeZoneId = "America/Los_Angeles";
+        public const string kTimeZoneId = "Europe/Berlin";
 
-        // Used when the system has no Pacific time zone data (custom/non-Windows environments). Has no daylight saving time.
-        public static readonly TimeSpan kFallbackUtcOffset = TimeSpan.FromHours(-8);
+        // Used when the system has no Central European time zone data (custom/non-Windows environments). Has no daylight saving time.
+        public static readonly TimeSpan kFallbackUtcOffset = TimeSpan.FromHours(1);
 
-        // IANA ids work on Linux/macOS runtimes, "Pacific Standard Time" is the Windows registry id.
-        private static readonly string[] kTimeZoneIdCandidates = { kTimeZoneId, "Pacific Standard Time", "US/Pacific", "PST8PDT" };
+        // IANA ids work on Linux/macOS runtimes, "W. Europe Standard Time" / "Central Europe Standard Time" are Windows registry ids.
+        private static readonly string[] kTimeZoneIdCandidates = { kTimeZoneId, "W. Europe Standard Time", "Central Europe Standard Time", "CET" };
 
         private static readonly TimeZoneInfo s_TimeZone = FindTimeZone();
 
         public static bool UsesFallbackOffset => s_TimeZone == null;
 
         /// <summary>
-        /// Door 1's opening time as Pacific wall-clock time: the date written in the document's "eventStart" (time and offset in the
+        /// Door 1's opening time as Central European wall-clock time: the date written in the document's "eventStart" (time and offset in the
         /// string are ignored, so "2026-12-01" and "2026-12-01T00:00:00+01:00" both mean December 1st) at <see cref="kUnlockTimeOfDay"/>.
         /// Falls back to <see cref="kEventStart"/> when the document has no valid eventStart.
         /// </summary>
@@ -51,15 +51,15 @@ namespace ChirpmasCalendar.Data
         }
 
         /// <summary>Door <paramref name="day"/> (1-based) opens at this instant.</summary>
-        public static DateTimeOffset GetUnlockTime(DateTime eventStart, int day) => PacificToUtc(eventStart.AddDays(day - 1));
+        public static DateTimeOffset GetUnlockTime(DateTime eventStart, int day) => EventTimeToUtc(eventStart.AddDays(day - 1));
 
-        /// <summary>End of door <paramref name="day"/>'s calendar date, i.e. the following midnight Pacific time.</summary>
-        public static DateTimeOffset GetEndOfDate(DateTime eventStart, int day) => PacificToUtc(eventStart.Date.AddDays(day));
+        /// <summary>End of door <paramref name="day"/>'s calendar date, i.e. the following midnight Central European time.</summary>
+        public static DateTimeOffset GetEndOfDate(DateTime eventStart, int day) => EventTimeToUtc(eventStart.Date.AddDays(day));
 
-        /// <summary>The midnight (Pacific time) that ends the day <paramref name="instant"/> falls on.</summary>
-        public static DateTimeOffset GetEndOfPacificDay(DateTimeOffset instant) => PacificToUtc(UtcToPacific(instant).Date.AddDays(1));
+        /// <summary>The midnight (Central European time) that ends the day <paramref name="instant"/> falls on.</summary>
+        public static DateTimeOffset GetEndOfEventDay(DateTimeOffset instant) => EventTimeToUtc(UtcToEventTime(instant).Date.AddDays(1));
 
-        public static DateTime UtcToPacific(DateTimeOffset instant)
+        public static DateTime UtcToEventTime(DateTimeOffset instant)
         {
             if (s_TimeZone != null)
             {
@@ -75,9 +75,9 @@ namespace ChirpmasCalendar.Data
             return DateTime.SpecifyKind(instant.UtcDateTime + kFallbackUtcOffset, DateTimeKind.Unspecified);
         }
 
-        public static DateTimeOffset PacificToUtc(DateTime pacific)
+        public static DateTimeOffset EventTimeToUtc(DateTime eventTime)
         {
-            DateTime wallClock = DateTime.SpecifyKind(pacific, DateTimeKind.Unspecified);
+            DateTime wallClock = DateTime.SpecifyKind(eventTime, DateTimeKind.Unspecified);
             if (s_TimeZone != null)
             {
                 try

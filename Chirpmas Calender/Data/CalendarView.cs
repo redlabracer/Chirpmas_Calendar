@@ -177,11 +177,11 @@ namespace ChirpmasCalendar.Data
             return view;
         }
 
-        // Door N belongs to the Nth event date; its day ends at the following midnight Pacific time. A custom unlockAt later than that still gets the rest of its own Pacific day.
+        // Door N belongs to the Nth event date; its day ends at the following midnight Central European time. A custom unlockAt later than that still gets the rest of its own day.
         private static DateTimeOffset DayChirpsEnd(DateTime eventStart, int day, DateTimeOffset unlockAt)
         {
             DateTimeOffset endOfDoorDate = CalendarSchedule.GetEndOfDate(eventStart, day);
-            DateTimeOffset endOfUnlockDay = CalendarSchedule.GetEndOfPacificDay(unlockAt);
+            DateTimeOffset endOfUnlockDay = CalendarSchedule.GetEndOfEventDay(unlockAt);
             return endOfDoorDate > endOfUnlockDay ? endOfDoorDate : endOfUnlockDay;
         }
 

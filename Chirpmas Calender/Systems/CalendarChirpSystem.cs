@@ -14,7 +14,9 @@ namespace ChirpmasCalendar.Systems
     /// Posts calendar chirps into the running city through Custom Chirps (if installed):
     /// <list type="bullet">
     /// <item>once per door, when the newest door is open and released: its "announcementChirps" (the first one large, with the cover image);</item>
-    /// <item>every <see cref="Setting.DayChirpMinutes"/>: the next "dayChirps" entry of the open doors whose day (Pacific time, see <see cref="CalendarSchedule"/>) is still running;</item>
+    /// <item>every <see cref="Setting.DayChirpMinutes"/>: the next "dayChirps" entry of the open doors whose entry the player has active
+    /// on Paradox Mods (see <see cref="PdxModsBridge"/>), for the rest of the event. Doors without a Paradox Mods id only chirp until the
+    /// end of their own day (Central European time, see <see cref="CalendarSchedule"/>);</item>
     /// <item>every <see cref="Setting.GenericChirpMinutes"/>: a random entry of "genericChirps".</item>
     /// </list>
     /// Runs in the simulation phase, so nothing is posted while the game is paused.
@@ -46,6 +48,7 @@ namespace ChirpmasCalendar.Systems
         private float m_NextGenericAt;
         private int m_LastGenericIndex = -1;
         private int m_LastDayChirpDoor;
+        private string m_LastEligibleDoors;
 
         public static void RequestReset() => s_ResetRequested = true;
 
@@ -257,18 +260,32 @@ namespace ChirpmasCalendar.Systems
             return true;
         }
 
-        // Doors take turns (several can be active while an older door's Pacific-time day is still running) within a door the
-        // chirps rotate in their listed order
+        // A door with a Paradox Mods id chirps from its opening until the event ends, but only while the player has that
+        // entry active in the playset (no chirps about things they didn't download). Doors without an id, or when Paradox
+        // Mods can't be asked, keep the old rule: only until the end of their own day.
+        private static bool CanDayChirp(CalendarDayView day)
+        {
+            if (day.State != DayState.Open || day.DayChirps.Count == 0)
+                return false;
+
+            bool? active = PdxModsBridge.IsActive(day.PdxModId);
+            return active ?? day.DayChirpsActive;
+        }
+
+        // Doors take turns, within a door the chirps rotate in their listed order
         private PendingChirp? PickDayChirp(CalendarView view)
         {
             CalendarDayView door = null;
             List<string> texts = null;
             CalendarDayView firstDoor = null;
             List<string> firstTexts = null;
+            var eligible = new System.Text.StringBuilder();
             foreach (CalendarDayView day in view.Days)
             {
-                if (!day.DayChirpsActive || day.State != DayState.Open || day.DayChirps.Count == 0)
+                if (!CanDayChirp(day))
                     continue;
+
+                eligible.Append(day.Day).Append(' ');
 
                 List<string> usable = day.DayChirps;
 
@@ -278,12 +295,19 @@ namespace ChirpmasCalendar.Systems
                     firstTexts = usable;
                 }
 
-                if (day.Day > m_LastDayChirpDoor)
+                if (door == null && day.Day > m_LastDayChirpDoor)
                 {
                     door = day;
                     texts = usable;
-                    break;
                 }
+            }
+
+            // Logged only when the set changes, so the log shows which entries the playset unlocks.
+            string eligibleKey = eligible.ToString().TrimEnd();
+            if (eligibleKey != m_LastEligibleDoors)
+            {
+                m_LastEligibleDoors = eligibleKey;
+                Mod.Log.Info($"Doors with day chirps: {(eligibleKey.Length == 0 ? "none" : eligibleKey)}");
             }
 
             if (door == null)

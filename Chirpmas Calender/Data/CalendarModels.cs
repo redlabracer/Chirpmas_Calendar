@@ -9,7 +9,7 @@ namespace ChirpmasCalendar.Data
 
         public bool EventActive { get; set; } = true;
 
-        /// First event date, e.g. "2026-12-01". Only the date counts: door 1 opens on it at 00:00:05 America/Los_Angeles, door N
+        /// First event date, e.g. "2026-12-01". Only the date counts: door 1 opens on it at 00:00:05 Europe/Berlin (CET), door N
         /// N-1 days later (see <see cref="CalendarSchedule.ResolveEventStart"/>); a day can still set its own UnlockAt.
         public string EventStart { get; set; }
 
@@ -51,7 +51,7 @@ namespace ChirpmasCalendar.Data
 
         /// <summary>
         /// Optional extra chirps by the creator. Once the door is open they rotate every <see cref="Setting.DayChirpMinutes"/>
-        /// until the end of the door's calendar day in Pacific time, see <see cref="CalendarSchedule"/>.
+        /// until the end of the door's calendar day in Central European time, see <see cref="CalendarSchedule"/>.
         /// </summary>
         public List<string> DayChirps { get; set; } = new List<string>();
     }
