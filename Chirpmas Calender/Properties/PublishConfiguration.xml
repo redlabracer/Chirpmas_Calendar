@@ -15,7 +15,7 @@ Get ready for the festive season with this creator-run event. Join us in countin
 Subscribe to the Chirpmas Asset Pack to keep every release together in game, and follow Const Builds on YouTube for a look at each day's gift. Enjoying one? Leave a like or comment for the creator and share your festive cities using #Chirpmas!
 
 **Who's involved**
-BadPeanut, civicbeaver, Const Builds, demudann, Ecodragon56, Findus-DE, gagaXm, globati, joergeske, kjmci, MayorCheeks, MrMiyagi10301, poplarponderosa, redlabracer, ReviLoxilef, rzzirrah, ShaneBuilds, TerraineanDev, Tio Auditore, Titann, trist1322, UnMaestro, Vttoc
+BadPeanut, civicbeaver, Const Builds, demudann, Ecodragon56, Findus-DE, gagaXm, globati, joergeske, kjmci, MayorCheeks, MrMiyagi10301, poplarponderosa, redlabracer, ReviLoxilef, rzzirrah, ShaneBuilds, TDW, TerraineanDev, Tio Auditore, Titann, trist1322, UnMaestro, Vttoc
 
 **About the calendar mod**
 The in-game advent calendar for **Countdown to Chirpmas 2026**, a community collaboration where creators from the Cities: Skylines II community share a free festive asset, map or mod every day from December 1st to Christmas Eve.
@@ -39,15 +39,16 @@ This community-made project is not affiliated, endorsed, or sponsored by Paradox
 	<Screenshot Value="Properties/Screenshots/0c-event-whos-involved.png" />
 	<Screenshot Value="Properties/Screenshots/0d-event-tips.png" />
 	<Screenshot Value="Properties/Screenshots/1-button.png" />
-	<Screenshot Value="Properties/Screenshots/2-calendar.png" />
-	<Screenshot Value="Properties/Screenshots/3-door.png" />
-	<Screenshot Value="Properties/Screenshots/4-about.png" />
+	<Screenshot Value="Properties/Screenshots/2-about.png" />
+	<Screenshot Value="Properties/Screenshots/3-calendar.png" />
+	<Screenshot Value="Properties/Screenshots/4-door.png" />
+	<Screenshot Value="Properties/Screenshots/5-door-locked.png" />
 	<!--Tag, can be set multiple times-->
 	<Tag Value="" />
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/something-new.1951640/" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.0.0.2" />
+	<ModVersion Value="1.0.0.3" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -57,8 +58,9 @@ This community-made project is not affiliated, endorsed, or sponsored by Paradox
 	<RequiredDLC Value="" />
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
 	<ChangeLog>
-**Version 1.0.0.2**
-- The door window now grows with longer descriptions. The cover picture gets bigger and the text gets more room, so there is no big empty space under the picture anymore.
+**Version 1.0.0.3**
+- Added TDW to the list of creators in the welcome pop-up.
+- New screenshots and an updated description on Paradox Mods.
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/redlabracer/Chirpmas_Calendar" />

@@ -17,6 +17,7 @@ export const CREATORS: string[] = [
     "ReviLoxilef",
     "rzzirrah",
     "ShaneBuilds",
+    "TDW",
     "TerraineanDev",
     "Tio Auditore",
     "Titann",
