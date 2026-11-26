@@ -210,6 +210,25 @@ $cc-stage-height: 648rem;
     width: 480rem;
 }
 
+// Medium and long descriptions (see sizeClass in DayDetail.tsx).
+.cc-detail-panel-m {
+    width: 900rem;
+
+    .cc-detail-media {
+        width: 340rem;
+        height: 340rem;
+    }
+}
+
+.cc-detail-panel-l {
+    width: 1000rem;
+
+    .cc-detail-media {
+        width: 400rem;
+        height: 400rem;
+    }
+}
+
 .cc-detail-content {
     display: flex;
     flex-direction: column;
@@ -236,8 +255,8 @@ $cc-stage-height: 648rem;
 
 // Paradox Mods covers are square; background-size: cover also crops non-square images instead of stretching them.
 .cc-detail-cover {
-    width: 280rem;
-    height: 280rem;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

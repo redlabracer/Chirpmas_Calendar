@@ -22,6 +22,16 @@ const ICON_BACK = "Media/Glyphs/ArrowLeft.svg";
 const POSITIVE_BUTTON = { button: "cc-cs2-button cc-cs2-button-positive" };
 const NEGATIVE_BUTTON = { button: "cc-cs2-button cc-cs2-button-negative" };
 
+// Gameface has no aspect-ratio, so the square cover can't follow the text height on its own. The panel and
+// cover grow in steps with the description length instead: a wider panel means fewer text lines, a bigger
+// cover less empty space under it, so both columns end up roughly the same height.
+const sizeClass = (day: CalendarDay) => {
+    const length = day.state === "open" && day.description ? day.description.length : 0;
+    if (length > 650) return " cc-detail-panel-l";
+    if (length > 350) return " cc-detail-panel-m";
+    return "";
+};
+
 /** Game-styled panel shown on top of the calendar after clicking a door. */
 export const DayDetail = ({ day, onClose }: DayDetailProps) => {
     const text = useText();
@@ -33,7 +43,7 @@ export const DayDetail = ({ day, onClose }: DayDetailProps) => {
         <div className="cc-detail-backdrop" onClick={onClose}>
             <div onClick={(e) => e.stopPropagation()}>
                 <Panel
-                    className={locked ? "cc-detail-panel cc-detail-panel-locked" : "cc-detail-panel"}
+                    className={locked ? "cc-detail-panel cc-detail-panel-locked" : "cc-detail-panel" + sizeClass(day)}
                     contentClassName="cc-detail-content"
                     header={<div className="cc-header-title">{text("Day", { DAY: day.day })}</div>}
                     onClose={onClose}
